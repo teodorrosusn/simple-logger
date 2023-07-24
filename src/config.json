@@ -1,0 +1,21 @@
+{
+    "transaction": {
+        "groupByTransaction": false,
+        "batchSize": 3
+    },
+    "drivers": {
+        "json": {
+            "path": "Myprojects\\Logger\\drivers\\JsonDriver",
+            "outputDir": "D:\\test\\"
+        },
+        "text": {
+            "path": "Myprojects\\Logger\\drivers\\TextDriver",
+            "outputDir": "D:\\test\\"
+        }
+    },
+    "translator": {
+        "active": false,
+        "translationsPath": "src\\translations\\",
+        "language": "en"
+    }
+}
