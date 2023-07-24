@@ -8,9 +8,13 @@ use Myprojects\Logger\core\Translator;
 
 class Logger extends Core
 {
+    /** @var Config */
     public Config $config;
+    /** @var Translator */
     private Translator $translator;
+    /** @var array */
     private array $translatorSettings;
+    /** @var array */
     private array $transactionSettings;
 
     public function __construct()
@@ -26,6 +30,11 @@ class Logger extends Core
         parent::__construct($this->config->getDriversSettings());
     }
 
+    /**
+     * Starts the procedure by either doing one log at a time or by grouping them by transaction.
+     *
+     * @return void
+     */
     public function exec()
     {
         $this->groupByTransaction = $this->transactionSettings['groupByTransaction'];
@@ -53,6 +62,13 @@ class Logger extends Core
         }
     }
 
+    /**
+     * Specifies the actual class => method, in which the log was executed.
+     *
+     * @param string $method
+     * 
+     * @return Logger
+     */
     public function log(string $method)
     {
         $this->parameters['method'] = $method;
@@ -60,6 +76,15 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Adds a transaction element E.G: 
+     * ['orderId' => '102']
+     *
+     * @param [type] $element
+     * @param [type] $value
+     * 
+     * @return Logger
+     */
     public function transaction($element, $value)
     {
         $this->parameters['transaction'] = [
@@ -70,6 +95,19 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Adds the actual log message which can be used in parallel with the built in translator.
+     * 
+     * First parameter takes the message which can be either a simple message string or a string that defines the actual translation string.
+     * E.G: translationFile.translationKey
+     *
+     * Second parameter is just a simple array which contains the values that will replace the "%s" characters from the actual translation message.
+     * 
+     * @param string $message
+     * @param array $values
+     * 
+     * @return Logger
+     */
     public function message(string $message, array $values = [])
     {
         if ($this->translatorSettings['active'] === true) {
@@ -81,6 +119,12 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Adds an array of data parameters that are used to offer more details into the log.
+     *
+     * @param array $meta
+     * @return Logger
+     */
     public function meta(array $meta)
     {
         $this->parameters['meta'] = $meta;
@@ -88,6 +132,13 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Sets the actual LOG debug level.
+     * Log debug level valid list: debug, error, info, warning.
+     *
+     * @param string $level
+     * @return Logger
+     */
     public function level(string $level)
     {
         $this->parameters['level'] = $level;
@@ -95,6 +146,13 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Sets the actual driver key that needs to be used in order to identify the desired driver selection.
+     * Driver keys are defined in the configuration file. Wrongly defined keys will result in a validation error.
+     *
+     * @param string $driver
+     * @return Logger
+     */
     public function driver(string $driver)
     {
         $this->parameters['driver'] = $driver;
@@ -102,6 +160,11 @@ class Logger extends Core
         return $this;
     }
 
+    /**
+     * Sets the actual timestamp of the log.
+     *
+     * @return Logger
+     */
     private function setTimeStamp()
     {
         $this->parameters['timestamp'] = date("Y-m-d H:i:s");
